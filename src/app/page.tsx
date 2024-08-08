@@ -1,5 +1,5 @@
 import { schema } from "@/app/registrationSchema";
-import { FormValues } from "@/app/types";
+import { FormValues, ReturnValue } from "@/app/types";
 
 import { RegistrationForm } from "./RegistrationForm";
 
@@ -22,7 +22,7 @@ export default function Home() {
     }
   };
 
-  const onFormAction = async (formData: FormData) => {
+  const onFormAction = async (prevState:ReturnValue, formData: FormData) => {
     "use server";
     const data = Object.fromEntries(formData);
     const parsed = schema.safeParse(data);

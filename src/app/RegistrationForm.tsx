@@ -1,5 +1,5 @@
 "use client";
-
+import { useFormState } from "react-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -17,14 +17,20 @@ import {
 import { FormValues, ReturnValue } from "@/app/types";
 
 import { schema } from "./registrationSchema";
+import { useRef } from "react";
 
 export const RegistrationForm = ({
   onDataAction,
   onFormAction,
 }: {
-  onFormAction: (data: FormData) => Promise<ReturnValue>;
+  onFormAction: (
+    prevState: ReturnValue,
+    data: FormData
+  ) => Promise<ReturnValue>;
   onDataAction: (data: FormValues) => Promise<ReturnValue>;
 }) => {
+  const [state, formAction] = useFormState(onFormAction, { message: "" });
+
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -42,32 +48,35 @@ export const RegistrationForm = ({
     //     "Content-Type": "application/json",
     //   },
     // })
-
     // const formData = new FormData();
     // formData.append("last", data.last);
     // formData.append("first", data.first);
     // formData.append("email", data.email);
-
     // fetch("/api/registerForm", {
     //   method: "POST",
     //   body: formData,
     // })
     //   .then((response) => response.json())
     //   .then((data) => console.log(data));
-
     // console.log(await onDataAction(data));
-
-    const formData = new FormData();
-    formData.append("last", data.last);
-    formData.append("first", data.first);
-    formData.append("email", data.email);
-
-    console.log(await onFormAction(formData));
+    // const formData = new FormData();
+    // formData.append("last", data.last);
+    // formData.append("first", data.first);
+    // formData.append("email", data.email);
+    // console.log(await onFormAction(formData));
   };
+
+  const formRef = useRef<HTMLFormElement>(null);
 
   return (
     <Form {...form}>
-      <form className="space-y-8" onSubmit={form.handleSubmit(onSubmit)}>
+      <div>{state?.message}</div>
+      <form
+        ref={formRef}
+        className="space-y-8"
+        onSubmit={form.handleSubmit(() => formRef?.current?.submit())}
+        action={formAction}
+      >
         <div className="flex gap-2 justify-stretch">
           <FormField
             control={form.control}
