@@ -1,5 +1,5 @@
 "use client";
-import { z } from "zod";
+
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -7,19 +7,22 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
   Form,
-  FormControl,
-  FormDescription,
-  FormField,
   FormItem,
+  FormField,
   FormLabel,
+  FormControl,
   FormMessage,
+  FormDescription,
 } from "@/components/ui/form";
+import { FormValues, ReturnValue } from "@/app/types";
 
 import { schema } from "./registrationSchema";
 
-type FormValues = z.infer<typeof schema>;
-
-export const RegistrationForm = () => {
+export const RegistrationForm = ({
+  onDataAction,
+}: {
+  onDataAction: (data: FormValues) => Promise<ReturnValue>;
+}) => {
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -38,17 +41,19 @@ export const RegistrationForm = () => {
     //   },
     // })
 
-    const formData = new FormData();
-    formData.append("last", data.last);
-    formData.append("first", data.first);
-    formData.append("email", data.email);
+    // const formData = new FormData();
+    // formData.append("last", data.last);
+    // formData.append("first", data.first);
+    // formData.append("email", data.email);
 
-    fetch("/api/registerForm", {
-      method: "POST",
-      body: formData,
-    })
-      .then((response) => response.json())
-      .then((data) => console.log(data));
+    // fetch("/api/registerForm", {
+    //   method: "POST",
+    //   body: formData,
+    // })
+    //   .then((response) => response.json())
+    //   .then((data) => console.log(data));
+
+    console.log(await onDataAction(data));
   };
 
   return (
