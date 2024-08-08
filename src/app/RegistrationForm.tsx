@@ -20,7 +20,9 @@ import { schema } from "./registrationSchema";
 
 export const RegistrationForm = ({
   onDataAction,
+  onFormAction,
 }: {
+  onFormAction: (data: FormData) => Promise<ReturnValue>;
   onDataAction: (data: FormValues) => Promise<ReturnValue>;
 }) => {
   const form = useForm<FormValues>({
@@ -53,7 +55,14 @@ export const RegistrationForm = ({
     //   .then((response) => response.json())
     //   .then((data) => console.log(data));
 
-    console.log(await onDataAction(data));
+    // console.log(await onDataAction(data));
+
+    const formData = new FormData();
+    formData.append("last", data.last);
+    formData.append("first", data.first);
+    formData.append("email", data.email);
+
+    console.log(await onFormAction(formData));
   };
 
   return (
