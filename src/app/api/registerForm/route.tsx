@@ -3,7 +3,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { schema } from "@/app/registrationSchema";
 
 export async function POST(req: NextRequest) {
-  const data = req.json();
+  const formData = await req.formData();
+  const data = Object.fromEntries(formData);
   const parsed = schema.safeParse(data);
 
   if (parsed.success) {
